@@ -1,0 +1,23 @@
+syntax = "proto3";
+package movies;
+
+service MovieService {
+  rpc GetPerson (ReqMovie) returns (Movie);
+  rpc GetPersons (ReqMovie) returns (Movies);
+}
+
+message Movie {
+  int32 id    = 1;  // Unique ID number for this movie.
+  string filename = 2;
+  string title = 3;
+  int32 playtime = 4;
+  uint32 photodatetime = 5;
+}
+
+message Movies {
+  repeated Movie movies = 1;
+}
+
+message ReqMovie {
+  int32 id    = 1;  // Unique ID number for this movie.
+}
