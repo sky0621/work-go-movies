@@ -20,3 +20,37 @@ func SetupLog(outputDir string) (*os.File, error) {
 
 	return logfile, nil
 }
+
+// [MEMO]セットアップ時に「log.Lshortfile」セットしたかったけど、このファイルでログ出力を担うようにすると全ログの「log.Lshortfile」結果が「logger.go」になるので諦め
+// TODO ロギングフレームワークを採用する！　logrusあたりがメジャーらしい。最近では（ベータ版だけど）zapがいいらしい。
+type logger struct {
+	isDebugEnable bool
+}
+
+func (l *logger) debug(fname string, v ...interface{}) {
+	if l.isDebugEnable {
+		log.Println("[DEBUG]["+fname+"]", v)
+	}
+}
+
+func (l *logger) debugf(fname string, formatStr string, v ...interface{}) {
+	if l.isDebugEnable {
+		log.Printf("[DEBUG]["+fname+"] "+formatStr, v)
+	}
+}
+
+func (l *logger) info(fname string, v ...interface{}) {
+	log.Println("[INFO]["+fname+"]", v)
+}
+
+func (l *logger) infof(fname string, formatStr string, v ...interface{}) {
+	log.Printf("[INFO]["+fname+"] "+formatStr, v)
+}
+
+func (l *logger) error(fname string, v ...interface{}) {
+	log.Println("[ERROR]["+fname+"]", v)
+}
+
+func (l *logger) errorf(fname string, formatStr string, v ...interface{}) {
+	log.Printf("[ERROR]["+fname+"] "+formatStr, v)
+}
