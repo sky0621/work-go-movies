@@ -20,7 +20,7 @@ func webapiProvide(arg *Arg, grpcClient movies.MovieServiceClient) int {
 	// 2.GRPC接続クライアント保持用ハンドラー
 	// 3.APIキーのチェック用ハンドラー（※現状は不要だけど念のため）
 	// ※ストレージとの接続はserverに持たせるので、ここでは不要
-	mux.HandleFunc("/movies/", withShareProperty(withGRPCConnect(&grpcClient, needAPIKey(handleMovies))))
+	mux.HandleFunc("/movies/", withShareProperty(withGRPCConnect(grpcClient, needAPIKey(handleMovies)))) // TODO リクエストのバリデーションもハンドラー追加かな
 
 	applog.infof(fname, "Webサーバーを開始します。 接続先：%s", arg.Addr)
 	graceful.Run(arg.Addr, 1*time.Second, mux)

@@ -7,7 +7,7 @@ service MovieService {
 }
 
 message Movie {
-  int32 id    = 1;  // Unique ID number for this movie.
+  string skey = 1;  // Unique ID number for this movie.
   string filename = 2;
   string title = 3;
   int32 playtime = 4;
@@ -19,5 +19,5 @@ message Movies {
 }
 
 message ReqMovie {
-  int32 id    = 1;  // Unique ID number for this movie.
+  string skey = 1;  // Unique ID number for this movie.
 }

@@ -1,8 +1,12 @@
 package client
 
 import (
+	"context"
 	"errors"
+	"log"
 	"net/http"
+
+	movies "github.com/sky0621/work-go-movies"
 )
 
 // GET /movies/ ... 全動画をリターン
@@ -34,11 +38,33 @@ func handleMovies(w http.ResponseWriter, r *http.Request) {
 func handleMoviesGET(w http.ResponseWriter, r *http.Request) {
 	const fname = "handleMoviesGET"
 	applog.debug(fname, "START")
+
+	client := getProperty(r, propertyKeyGRPCClient).(movies.MovieServiceClient)
+
 	p := NewPath(r.URL.Path)
+	// TODO リファクタ後回し
 	if p.HasID() {
 		applog.debugf(fname, "ID: %s", p.ID)
+		resMovie, err := client.GetPerson(context.Background(), &movies.ReqMovie{Skey: p.ID})
+		if err != nil {
+			applog.error(fname, err)
+			// TODO エラーハンドリングは後で検討
+			respondErr(w, r, http.StatusNotFound, "")
+			return
+		}
+		log.Println(resMovie)
+		respond(w, r, http.StatusOK, resMovie)
 	} else {
 		applog.debugf(fname, "Path: %s", p.Path)
+		resMovies, err := client.GetPersons(context.Background(), &movies.ReqMovie{Skey: ""}) // TODO 全動画取得時のパラメータは再検討！
+		if err != nil {
+			applog.error(fname, err)
+			// TODO エラーハンドリングは後で検討
+			respondErr(w, r, http.StatusNotFound, "")
+			return
+		}
+		log.Println(resMovies)
+		respond(w, r, http.StatusOK, resMovies)
 	}
 	applog.debug(fname, "END")
 }

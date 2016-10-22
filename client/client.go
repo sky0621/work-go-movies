@@ -17,7 +17,9 @@ func Exec(arg *Arg) int {
 	}
 	defer grpcConn.Close()
 
-	exitCode := webapiProvide(arg, movies.NewMovieServiceClient(grpcConn))
+	client := movies.NewMovieServiceClient(grpcConn)
+
+	exitCode := webapiProvide(arg, client)
 	if exitCode != ExitCodeOK {
 		return exitCode
 	}

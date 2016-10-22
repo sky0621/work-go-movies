@@ -27,7 +27,7 @@ func needAPIKey(fn http.HandlerFunc) http.HandlerFunc {
 }
 
 // GRPC接続クライアントの保持
-func withGRPCConnect(grpcClient *movies.MovieServiceClient, fn http.HandlerFunc) http.HandlerFunc {
+func withGRPCConnect(grpcClient movies.MovieServiceClient, fn http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		setProperty(r, propertyKeyGRPCClient, grpcClient)
 		fn(w, r)

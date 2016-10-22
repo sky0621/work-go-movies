@@ -12,7 +12,7 @@ import (
 
 func sample1(req *movies.ReqMovie) *movies.Movie {
 	return &movies.Movie{
-		Id:            req.Id,
+		Skey:          req.Skey,
 		Filename:      "MOV0123.mp4",
 		Title:         "運動会にて",
 		Playtime:      93,
@@ -22,7 +22,7 @@ func sample1(req *movies.ReqMovie) *movies.Movie {
 
 func sample2(req *movies.ReqMovie) *movies.Movie {
 	return &movies.Movie{
-		Id:            33221144,
+		Skey:          "33221144",
 		Filename:      "MOV0925.mp4",
 		Title:         "ハロウィンパーティ",
 		Playtime:      114,
@@ -37,7 +37,7 @@ type GetPersoner struct{}
 func (p GetPersoner) GetPerson(ctx context.Context, req *movies.ReqMovie) (*movies.Movie, error) {
 
 	log.Println("GetPerson!")
-	log.Println(req.Id)
+	log.Println(req.Skey)
 	return sample1(req), nil
 }
 
@@ -45,7 +45,7 @@ func (p GetPersoner) GetPerson(ctx context.Context, req *movies.ReqMovie) (*movi
 func (p GetPersoner) GetPersons(ctx context.Context, req *movies.ReqMovie) (*movies.Movies, error) {
 
 	log.Println("GetPersons!")
-	log.Println(req.Id)
+	log.Println(req.Skey)
 	return &movies.Movies{
 		Movies: []*movies.Movie{sample1(req), sample2(req)},
 	}, nil
