@@ -6,6 +6,7 @@ const (
 	ExitCodeArgsError
 	ExitCodeLogSetupError
 	ExitCodeConfigError
+	ExitCodeGRPCError
 	ExitCodeMovieError
 	ExitCodeError
 	ExitCodePanic

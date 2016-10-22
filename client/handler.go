@@ -32,13 +32,15 @@ func handleMovies(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleMoviesGET(w http.ResponseWriter, r *http.Request) {
-	applog.debug("handleMoviesGET", "START")
+	const fname = "handleMoviesGET"
+	applog.debug(fname, "START")
 	p := NewPath(r.URL.Path)
 	if p.HasID() {
-
+		applog.debugf(fname, "ID: %s", p.ID)
 	} else {
-
+		applog.debugf(fname, "Path: %s", p.Path)
 	}
+	applog.debug(fname, "END")
 }
 
 func handleMoviesPOST(w http.ResponseWriter, r *http.Request) {
