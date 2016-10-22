@@ -7,14 +7,10 @@ import (
 	"github.com/stretchr/graceful"
 )
 
-var applog *logger
-
 // Run ... 実クライアントからのCRUD要求に応じて、server にリクエストし、結果を編集してクライアントに返す。
 // 返却形式はJSON。ユーザビューは別プロジェクトとして作る。
-func Run(arg *Arg) int {
-	const fname = "Run"
-	applog = &logger{isDebugEnable: arg.IsDebug}
-	applog.debug(fname, "プログラム引数", *arg)
+func webapiProvide(arg *Arg) int {
+	const fname = "webapiProvide"
 	applog.debug(fname, "START")
 
 	mux := http.NewServeMux()
@@ -25,5 +21,6 @@ func Run(arg *Arg) int {
 	graceful.Run(arg.Addr, 1*time.Second, mux)
 	applog.info(fname, "Webサーバーを停止します。")
 
+	applog.debug(fname, "END")
 	return ExitCodeOK
 }

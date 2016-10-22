@@ -1,7 +1,7 @@
 package client
 
 import (
-	"io"
+	"errors"
 	"net/http"
 )
 
@@ -15,15 +15,40 @@ import (
 func handleMovies(w http.ResponseWriter, r *http.Request) {
 	const fname = "handleMovies"
 	applog.debug(fname, "START")
+
 	switch r.Method {
 	case "GET":
 		handleMoviesGET(w, r)
+	case "POST":
+		handleMoviesPOST(w, r)
+	case "PUT":
+		handleMoviesPUT(w, r)
+	case "DELETE":
+		handleMoviesDELETE(w, r)
 	default:
-		io.WriteString(w, "GETのみ受け付けます")
+		respondHTTPErr(w, r, http.StatusNotFound)
 	}
 	applog.debug(fname, "END")
 }
 
 func handleMoviesGET(w http.ResponseWriter, r *http.Request) {
 	applog.debug("handleMoviesGET", "START")
+	p := NewPath(r.URL.Path)
+	if p.HasID() {
+
+	} else {
+
+	}
+}
+
+func handleMoviesPOST(w http.ResponseWriter, r *http.Request) {
+	respondErr(w, r, http.StatusInternalServerError, errors.New("未実装です"))
+}
+
+func handleMoviesPUT(w http.ResponseWriter, r *http.Request) {
+	respondErr(w, r, http.StatusInternalServerError, errors.New("未実装です"))
+}
+
+func handleMoviesDELETE(w http.ResponseWriter, r *http.Request) {
+	respondErr(w, r, http.StatusInternalServerError, errors.New("未実装です"))
 }

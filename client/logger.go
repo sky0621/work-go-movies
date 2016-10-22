@@ -15,6 +15,7 @@ func SetupLog(outputDir string) (*os.File, error) {
 		return nil, err
 	}
 
+	// [MEMO]内容に応じて出力するファイルを切り替える場合はどうするんだ・・・？
 	log.SetOutput(io.MultiWriter(logfile, os.Stdout))
 	log.SetFlags(log.Ldate | log.Ltime)
 
