@@ -10,6 +10,26 @@ import (
 	"google.golang.org/grpc"
 )
 
+func sample1(req *movies.ReqMovie) *movies.Movie {
+	return &movies.Movie{
+		Id:            req.Id,
+		Filename:      "MOV0123.mp4",
+		Title:         "運動会にて",
+		Playtime:      93,
+		Photodatetime: 1477160405,
+	}
+}
+
+func sample2(req *movies.ReqMovie) *movies.Movie {
+	return &movies.Movie{
+		Id:            33221144,
+		Filename:      "MOV0925.mp4",
+		Title:         "ハロウィンパーティ",
+		Playtime:      114,
+		Photodatetime: 1477160607,
+	}
+}
+
 // GetPersoner ...
 type GetPersoner struct{}
 
@@ -18,7 +38,7 @@ func (p GetPersoner) GetPerson(ctx context.Context, req *movies.ReqMovie) (*movi
 
 	log.Println("GetPerson!")
 	log.Println(req.Id)
-	return nil, nil
+	return sample1(req), nil
 }
 
 // GetPersons ...
@@ -26,7 +46,9 @@ func (p GetPersoner) GetPersons(ctx context.Context, req *movies.ReqMovie) (*mov
 
 	log.Println("GetPersons!")
 	log.Println(req.Id)
-	return nil, nil
+	return &movies.Movies{
+		Movies: []*movies.Movie{sample1(req), sample2(req)},
+	}, nil
 }
 
 // server

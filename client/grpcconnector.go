@@ -27,7 +27,8 @@ func grpcConnect(arg *Arg) int {
 	if err != nil {
 		log.Fatalf("could not greet: %v", err)
 	}
-	log.Printf("Greeting: %d", r.Id)
+	// log.Printf("Id: %d", r.Id)
+	log.Println(r)
 
 	applog.debug(fname, "END")
 	return ExitCodeOK
