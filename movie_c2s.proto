@@ -1,9 +1,9 @@
 syntax = "proto3";
-package movies;
+package moviesc2s;
 
-service MovieService {
-  rpc GetPerson (ReqMovie) returns (Movie);
-  rpc GetPersons (ReqMovie) returns (Movies);
+service MovieC2SService {
+  rpc GetPerson (MovieSkey) returns (Movie);
+  rpc GetPersons (Movie) returns (Movies);
 }
 
 message Movie {
@@ -18,6 +18,6 @@ message Movies {
   repeated Movie movies = 1;
 }
 
-message ReqMovie {
+message MovieSkey {
   string skey = 1;  // Unique ID number for this movie.
 }

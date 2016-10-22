@@ -1,0 +1,23 @@
+syntax = "proto3";
+package moviess2p;
+
+service MovieS2PService {
+  rpc GetPerson (MovieSkey) returns (Movie);
+  rpc GetPersons (Movie) returns (Movies);
+}
+
+message Movie {
+  string skey = 1;  // Unique ID number for this movie.
+  string filename = 2;
+  string title = 3;
+  int32 playtime = 4;
+  uint32 photodatetime = 5;
+}
+
+message Movies {
+  repeated Movie movies = 1;
+}
+
+message MovieSkey {
+  string skey = 1;  // Unique ID number for this movie.
+}
