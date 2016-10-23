@@ -45,7 +45,7 @@ func handleMoviesGET(w http.ResponseWriter, r *http.Request) {
 	// TODO リファクタ後回し
 	if p.HasID() {
 		applog.debugf(fname, "ID: %s", p.ID)
-		resMovie, err := client.GetPerson(context.Background(), &moviesc2s.MovieSkey{Skey: p.ID})
+		resMovie, err := client.GetMovie(context.Background(), &moviesc2s.MovieSkey{Skey: p.ID})
 		if err != nil {
 			applog.error(fname, err)
 			// TODO エラーハンドリングは後で検討
@@ -56,7 +56,7 @@ func handleMoviesGET(w http.ResponseWriter, r *http.Request) {
 		respond(w, r, http.StatusOK, resMovie)
 	} else {
 		applog.debugf(fname, "Path: %s", p.Path)
-		resMovies, err := client.GetPersons(context.Background(), &moviesc2s.Movie{Skey: ""}) // TODO 全動画取得時のパラメータは再検討！
+		resMovies, err := client.GetMovies(context.Background(), &moviesc2s.Movie{Skey: ""}) // TODO 全動画取得時のパラメータは再検討！
 		if err != nil {
 			applog.error(fname, err)
 			// TODO エラーハンドリングは後で検討

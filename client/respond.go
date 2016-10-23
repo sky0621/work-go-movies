@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-// TODO 実際に使うコードを書く際にロジック再検討
+// 実クライアントとのやりとりの中でどのような形式を扱うかを担う。（とりあえずJSON）
 
 func decodeBody(r *http.Request, v interface{}) error {
 	defer r.Body.Close()

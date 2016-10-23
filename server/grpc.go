@@ -1,17 +1,26 @@
-package client
+package server
 
-import "google.golang.org/grpc"
+import (
+	"log"
+	"net"
 
-func grpcConnect(arg *Arg) (*grpc.ClientConn, error) {
+	moviesc2s "github.com/sky0621/work-go-movies/grpcc2s"
+	"google.golang.org/grpc"
+)
+
+func grpcListen(arg *Arg) error {
 	const fname = "grpcConnect"
 	applog.debug(fname, "START")
 
-	conn, err := grpc.Dial("localhost"+arg.GrpcPort, grpc.WithInsecure())
+	lis, err := net.Listen("tcp", arg.GrpcPort)
 	if err != nil {
 		applog.error(fname, err)
-		return nil, err
+		log.Fatal(err)
 	}
+	grpcServer := grpc.NewServer()
+	moviesc2s.RegisterMovieC2SServiceServer(grpcServer, MovieHandler{})
+	grpcServer.Serve(lis)
 
 	applog.debug(fname, "END")
-	return conn, nil
+	return nil
 }

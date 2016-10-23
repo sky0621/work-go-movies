@@ -2,8 +2,8 @@ syntax = "proto3";
 package moviesc2s;
 
 service MovieC2SService {
-  rpc GetPerson (MovieSkey) returns (Movie);
-  rpc GetPersons (Movie) returns (Movies);
+  rpc GetMovie (MovieSkey) returns (Movie);
+  rpc GetMovies (Movie) returns (Movies);
 }
 
 message Movie {

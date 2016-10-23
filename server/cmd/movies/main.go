@@ -1,64 +1,47 @@
 package main
 
 import (
-	"log"
-	"net"
+	"flag"
+	"os"
 
-	moviesc2s "github.com/sky0621/work-go-movies/grpcc2s"
-	context "golang.org/x/net/context"
-
-	"google.golang.org/grpc"
+	s "github.com/sky0621/work-go-movies/server"
 )
-
-func sample1(skey string) *moviesc2s.Movie {
-	return &moviesc2s.Movie{
-		Skey:          skey,
-		Filename:      "MOV0123.mp4",
-		Title:         "運動会にて",
-		Playtime:      93,
-		Photodatetime: 1477160405,
-	}
-}
-
-func sample2(skey string) *moviesc2s.Movie {
-	return &moviesc2s.Movie{
-		Skey:          skey,
-		Filename:      "MOV0925.mp4",
-		Title:         "ハロウィンパーティ",
-		Playtime:      114,
-		Photodatetime: 1477160607,
-	}
-}
-
-// GetPersoner ...
-type GetPersoner struct{}
-
-// GetPerson ...
-func (p GetPersoner) GetPerson(ctx context.Context, req *moviesc2s.MovieSkey) (*moviesc2s.Movie, error) {
-
-	log.Println("GetPerson!")
-	log.Println(req.Skey)
-	return sample1(req.Skey), nil
-}
-
-// GetPersons ...
-func (p GetPersoner) GetPersons(ctx context.Context, req *moviesc2s.Movie) (*moviesc2s.Movies, error) {
-
-	log.Println("GetPersons!")
-	log.Println(req.Skey)
-	return &moviesc2s.Movies{
-		Movies: []*moviesc2s.Movie{sample1(req.Skey), sample2("92011538")},
-	}, nil
-}
 
 // server
 func main() {
-	// clientからの接続のため、ひとまずここに書く
-	lis, err := net.Listen("tcp", ":7110")
+	arg, err := parseFlag()
 	if err != nil {
-		log.Fatal(err)
+		os.Exit(s.ExitCodeArgsError)
 	}
-	grpcServer := grpc.NewServer()
-	moviesc2s.RegisterMovieC2SServiceServer(grpcServer, GetPersoner{})
-	grpcServer.Serve(lis)
+
+	logfile, err := s.SetupLog(arg.LogDir)
+	if err != nil {
+		os.Exit(s.ExitCodeLogSetupError)
+	}
+	defer logfile.Close()
+
+	os.Exit(s.Exec(arg))
+}
+
+func parseFlag() (*s.Arg, error) {
+	// TODO アプリバージョンの表示「-version」も入れる
+
+	var grpcport string
+	var logDir string
+	var isDebug bool
+	flag.StringVar(&grpcport, "grpc", ":7110", "GRPC接続先ポート")
+	flag.StringVar(&grpcport, "g", ":7110", "GRPC接続先ポート")
+	flag.StringVar(&logDir, "log", ".", "ログ出力先ディレクトリ")
+	flag.StringVar(&logDir, "l", ".", "ログ出力先ディレクトリ")
+	flag.BoolVar(&isDebug, "debug", false, "デバッグモード")
+	flag.BoolVar(&isDebug, "d", false, "デバッグモード")
+	flag.Parse()
+
+	// TODO NewArg内でバリデーション実装後、errが返る可能性が発生。
+	arg, err := s.NewArg(grpcport, logDir, isDebug)
+	if err != nil {
+		return nil, err
+	}
+
+	return arg, nil
 }
