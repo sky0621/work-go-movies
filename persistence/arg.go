@@ -1,4 +1,4 @@
-package client
+package persistence
 
 // Arg ...
 // TODO バリデーション
@@ -10,16 +10,15 @@ type Arg struct {
 }
 
 // NewArg ...
+// TODO 永続化ストレージとの接続情報など後で追加！
 func NewArg(
 	grpc2sPort string,
-	addr string,
 	logDir string,
 	isDebug bool) (*Arg, error) {
 	// TODO バリデーション
 	// 型変換前後でそれぞれバリデーションする用途を考慮し、構造体 Arg のオブジェクト生成関数を用意
 	return &Arg{
 		Grpc2sPort: grpc2sPort,
-		Addr:       addr,
 		LogDir:     logDir,
 		IsDebug:    isDebug,
 	}, nil

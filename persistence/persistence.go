@@ -1,10 +1,8 @@
-package client
-
-import moviesc2s "github.com/sky0621/work-go-movies/grpcc2s"
+package persistence
 
 var applog *logger
 
-// Exec ... GRPC接続やWebAPIサーバ起動を行う
+// Exec ... server からのCRUD要求に応じて動画リソース項目を永続化ストレージを使って生成・更新・取得・削除する。
 func Exec(arg *Arg) int {
 	const fname = "Exec"
 	applog = &logger{isDebugEnable: arg.IsDebug}
@@ -12,19 +10,11 @@ func Exec(arg *Arg) int {
 	applog.debug(fname, "START")
 
 	applog.debug(fname, "サーバとのコネクト開始")
-	grpcConn, err := grpcConnect(arg)
+	err := grpcListen(arg)
 	if err != nil {
 		return ExitCodeGRPCError
 	}
 	applog.debug(fname, "サーバとのコネクト完了")
-	defer grpcConn.Close()
-
-	client := moviesc2s.NewMovieC2SServiceClient(grpcConn)
-
-	exitCode := webapiProvide(arg, client)
-	if exitCode != ExitCodeOK {
-		return exitCode
-	}
 
 	applog.debug(fname, "END")
 	return ExitCodeOK

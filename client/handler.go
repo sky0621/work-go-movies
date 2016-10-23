@@ -3,7 +3,6 @@ package client
 import (
 	"context"
 	"errors"
-	"log"
 	"net/http"
 
 	moviesc2s "github.com/sky0621/work-go-movies/grpcc2s"
@@ -45,6 +44,7 @@ func handleMoviesGET(w http.ResponseWriter, r *http.Request) {
 	// TODO リファクタ後回し
 	if p.HasID() {
 		applog.debugf(fname, "ID: %s", p.ID)
+		applog.debug(fname, "サーバとGetMovieで接続開始")
 		resMovie, err := client.GetMovie(context.Background(), &moviesc2s.MovieSkey{Skey: p.ID})
 		if err != nil {
 			applog.error(fname, err)
@@ -52,10 +52,12 @@ func handleMoviesGET(w http.ResponseWriter, r *http.Request) {
 			respondErr(w, r, http.StatusNotFound, "")
 			return
 		}
-		log.Println(resMovie)
+		applog.debug(fname, "サーバとGetMovieで接続完了")
+		applog.debug(fname, resMovie)
 		respond(w, r, http.StatusOK, resMovie)
 	} else {
 		applog.debugf(fname, "Path: %s", p.Path)
+		applog.debug(fname, "サーバとGetMoviesで接続開始")
 		resMovies, err := client.GetMovies(context.Background(), &moviesc2s.Movie{Skey: ""}) // TODO 全動画取得時のパラメータは再検討！
 		if err != nil {
 			applog.error(fname, err)
@@ -63,7 +65,8 @@ func handleMoviesGET(w http.ResponseWriter, r *http.Request) {
 			respondErr(w, r, http.StatusNotFound, "")
 			return
 		}
-		log.Println(resMovies)
+		applog.debug(fname, "サーバとGetMoviesで接続完了")
+		applog.debug(fname, resMovies)
 		respond(w, r, http.StatusOK, resMovies)
 	}
 	applog.debug(fname, "END")

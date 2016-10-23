@@ -1,49 +1,42 @@
 package server
 
 import (
-	"log"
-
 	moviesc2s "github.com/sky0621/work-go-movies/grpcc2s"
+	moviess2p "github.com/sky0621/work-go-movies/grpcs2p"
 	context "golang.org/x/net/context"
 )
 
 // MovieHandler ...
-type MovieHandler struct{}
+type MovieHandler struct {
+	S2pClient moviess2p.MovieS2PServiceClient
+}
 
 // GetMovie ...
 func (h MovieHandler) GetMovie(ctx context.Context, req *moviesc2s.MovieSkey) (*moviesc2s.Movie, error) {
-
-	log.Println("GetPerson!")
-	log.Println(req.Skey)
-	return sample1(req.Skey), nil
+	const fname = "GetMovie"
+	applog.debug(fname, "START")
+	applog.debug(fname, req)
+	movie, err := h.GetMovie(ctx, req)
+	if err != nil {
+		applog.error(fname, err)
+		applog.debug(fname, "ABEND")
+		return nil, err
+	}
+	applog.debug(fname, "END")
+	return movie, nil
 }
 
 // GetMovies ...
 func (h MovieHandler) GetMovies(ctx context.Context, req *moviesc2s.Movie) (*moviesc2s.Movies, error) {
-
-	log.Println("GetPersons!")
-	log.Println(req.Skey)
-	return &moviesc2s.Movies{
-		Movies: []*moviesc2s.Movie{sample1(req.Skey), sample2("92011538")},
-	}, nil
-}
-
-func sample1(skey string) *moviesc2s.Movie {
-	return &moviesc2s.Movie{
-		Skey:          skey,
-		Filename:      "MOV0123.mp4",
-		Title:         "運動会にて",
-		Playtime:      93,
-		Photodatetime: 1477160405,
+	const fname = "GetMovies"
+	applog.debug(fname, "START")
+	applog.debug(fname, req)
+	movies, err := h.GetMovies(ctx, req)
+	if err != nil {
+		applog.error(fname, err)
+		applog.debug(fname, "ABEND")
+		return nil, err
 	}
-}
-
-func sample2(skey string) *moviesc2s.Movie {
-	return &moviesc2s.Movie{
-		Skey:          skey,
-		Filename:      "MOV0925.mp4",
-		Title:         "ハロウィンパーティ",
-		Playtime:      114,
-		Photodatetime: 1477160607,
-	}
+	applog.debug(fname, "END")
+	return movies, nil
 }
