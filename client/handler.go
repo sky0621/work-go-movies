@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 
-	movies "github.com/sky0621/work-go-movies"
+	moviesc2s "github.com/sky0621/work-go-movies/grpcc2s"
 )
 
 // GET /movies/ ... 全動画をリターン
@@ -39,13 +39,13 @@ func handleMoviesGET(w http.ResponseWriter, r *http.Request) {
 	const fname = "handleMoviesGET"
 	applog.debug(fname, "START")
 
-	client := getProperty(r, propertyKeyGRPCClient).(movies.MovieServiceClient)
+	client := getProperty(r, propertyKeyGRPCClient).(moviesc2s.MovieC2SServiceClient)
 
 	p := NewPath(r.URL.Path)
 	// TODO リファクタ後回し
 	if p.HasID() {
 		applog.debugf(fname, "ID: %s", p.ID)
-		resMovie, err := client.GetPerson(context.Background(), &movies.ReqMovie{Skey: p.ID})
+		resMovie, err := client.GetPerson(context.Background(), &moviesc2s.MovieSkey{Skey: p.ID})
 		if err != nil {
 			applog.error(fname, err)
 			// TODO エラーハンドリングは後で検討
@@ -56,7 +56,7 @@ func handleMoviesGET(w http.ResponseWriter, r *http.Request) {
 		respond(w, r, http.StatusOK, resMovie)
 	} else {
 		applog.debugf(fname, "Path: %s", p.Path)
-		resMovies, err := client.GetPersons(context.Background(), &movies.ReqMovie{Skey: ""}) // TODO 全動画取得時のパラメータは再検討！
+		resMovies, err := client.GetPersons(context.Background(), &moviesc2s.Movie{Skey: ""}) // TODO 全動画取得時のパラメータは再検討！
 		if err != nil {
 			applog.error(fname, err)
 			// TODO エラーハンドリングは後で検討

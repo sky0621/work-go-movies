@@ -1,6 +1,6 @@
 package client
 
-import movies "github.com/sky0621/work-go-movies"
+import moviesc2s "github.com/sky0621/work-go-movies/grpcc2s"
 
 var applog *logger
 
@@ -17,7 +17,7 @@ func Exec(arg *Arg) int {
 	}
 	defer grpcConn.Close()
 
-	client := movies.NewMovieServiceClient(grpcConn)
+	client := moviesc2s.NewMovieC2SServiceClient(grpcConn)
 
 	exitCode := webapiProvide(arg, client)
 	if exitCode != ExitCodeOK {

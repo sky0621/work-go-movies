@@ -4,13 +4,13 @@ import (
 	"net/http"
 	"time"
 
-	movies "github.com/sky0621/work-go-movies"
+	moviesc2s "github.com/sky0621/work-go-movies/grpcc2s"
 	"github.com/stretchr/graceful"
 )
 
 // Run ... 実クライアントからのCRUD要求に応じて、server にリクエストし、結果を編集してクライアントに返す。
 // 返却形式はJSON。ユーザビューは別プロジェクトとして作る。
-func webapiProvide(arg *Arg, grpcClient movies.MovieServiceClient) int {
+func webapiProvide(arg *Arg, grpcClient moviesc2s.MovieC2SServiceClient) int {
 	const fname = "webapiProvide"
 	applog.debug(fname, "START")
 

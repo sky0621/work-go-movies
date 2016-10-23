@@ -7,6 +7,8 @@ import (
 	c "github.com/sky0621/work-go-movies/client"
 )
 
+// 【概要】プログラム引数の解析とログのセットアップ呼び出し、そして client.go 内の Exec() 呼び出し
+
 // TODO シグナル受信してアプリ停止するロジックを入れる
 
 // client

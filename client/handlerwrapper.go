@@ -3,7 +3,7 @@ package client
 import (
 	"net/http"
 
-	movies "github.com/sky0621/work-go-movies"
+	moviesc2s "github.com/sky0621/work-go-movies/grpcc2s"
 )
 
 const (
@@ -27,7 +27,7 @@ func needAPIKey(fn http.HandlerFunc) http.HandlerFunc {
 }
 
 // GRPC接続クライアントの保持
-func withGRPCConnect(grpcClient movies.MovieServiceClient, fn http.HandlerFunc) http.HandlerFunc {
+func withGRPCConnect(grpcClient moviesc2s.MovieC2SServiceClient, fn http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		setProperty(r, propertyKeyGRPCClient, grpcClient)
 		fn(w, r)
