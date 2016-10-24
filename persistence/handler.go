@@ -6,14 +6,24 @@ import (
 )
 
 // MovieHandler ...
-type MovieHandler struct{}
+type MovieHandler struct {
+	storage *storage
+}
 
 // GetMovie ...
 func (h MovieHandler) GetMovie(ctx context.Context, req *moviess2p.MovieSkey) (*moviess2p.Movie, error) {
 	const fname = "GetMovie"
 	applog.debug(fname, "START")
 	applog.debug(fname, req)
-	movie := sample1(req.Skey)
+
+	// var s2pMovies moviess2p.Movie
+	// query := h.storage.conn.DB(storageName).C(collectionName).Find(bson.M{})
+	// query.One(s2pMovies)
+	movie, err := h.storage.readOne(req.Skey)
+	if err != nil {
+		applog.debug(fname, "ABEND")
+		return nil, err
+	}
 	applog.debug(fname, "END")
 	return movie, nil
 }
@@ -23,31 +33,11 @@ func (h MovieHandler) GetMovies(ctx context.Context, req *moviess2p.Movie) (*mov
 	const fname = "GetMovies"
 	applog.debug(fname, "START")
 	applog.debug(fname, req)
-	movies := &moviess2p.Movies{
-		Movies: []*moviess2p.Movie{sample1(req.Skey), sample2("92011538")},
+	movies, err := h.storage.read()
+	if err != nil {
+		applog.debug(fname, "ABEND")
+		return nil, err
 	}
 	applog.debug(fname, "END")
-	return movies, nil
-}
-
-// TODO 以降はダミー実装。永続化ストレージとの接続ロジック記述後、削除！
-
-func sample1(skey string) *moviess2p.Movie {
-	return &moviess2p.Movie{
-		Skey:          skey,
-		Filename:      "MOV0123b.mp4",
-		Title:         "運動会にて2",
-		Playtime:      93,
-		Photodatetime: 1477160405,
-	}
-}
-
-func sample2(skey string) *moviess2p.Movie {
-	return &moviess2p.Movie{
-		Skey:          skey,
-		Filename:      "MOV0925b.mp4",
-		Title:         "ハロウィンパーティ2",
-		Playtime:      114,
-		Photodatetime: 1477160607,
-	}
+	return &moviess2p.Movies{Movies: movies}, nil
 }

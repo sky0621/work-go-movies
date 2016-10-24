@@ -9,8 +9,18 @@ func Exec(arg *Arg) int {
 	applog.debug(fname, "プログラム引数", *arg)
 	applog.debug(fname, "START")
 
+	applog.debug(fname, "ストレージとのコネクト開始")
+	storage := &storage{}
+	err := storage.open(arg.StorageAddr)
+	if err != nil {
+		return ExitCodeStorageError
+	}
+	defer storage.close()
+	applog.debug(fname, storage)
+	applog.debug(fname, "ストレージとのコネクト終了")
+
 	applog.debug(fname, "サーバとのコネクト開始")
-	err := grpcListen(arg)
+	err = grpcListen(arg, storage)
 	if err != nil {
 		return ExitCodeGRPCError
 	}

@@ -10,8 +10,8 @@ message Movie {
   string skey = 1;  // Unique ID number for this movie.
   string filename = 2;
   string title = 3;
-  int32 playtime = 4;
-  uint32 photodatetime = 5;
+  string playtime = 4;
+  string photodatetime = 5;
 }
 
 message Movies {

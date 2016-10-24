@@ -9,7 +9,7 @@ import (
 )
 
 // 対 サーバ
-func grpcListen(arg *Arg) error {
+func grpcListen(arg *Arg, storage *storage) error {
 	const fname = "grpcListen"
 	applog.debug(fname, "START")
 
@@ -20,7 +20,7 @@ func grpcListen(arg *Arg) error {
 	}
 
 	grpcServer := grpc.NewServer()
-	moviess2p.RegisterMovieS2PServiceServer(grpcServer, MovieHandler{})
+	moviess2p.RegisterMovieS2PServiceServer(grpcServer, MovieHandler{storage: storage})
 	grpcServer.Serve(lis)
 
 	applog.debugf(fname, "サーバとのGRPC接続用にポート %s で待ち受け", arg.Grpc2sPort)
