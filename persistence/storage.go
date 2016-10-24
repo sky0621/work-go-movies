@@ -55,7 +55,7 @@ func (s *storage) close() error {
 	return nil
 }
 
-func (s *storage) read() ([]*moviess2p.Movie, error) {
+func (s *storage) read() (*moviess2p.Movies, error) {
 	const fname = "read"
 	applog.debug(fname, "START")
 	file, err := ioutil.ReadFile(s.storageAddr)
@@ -63,33 +63,14 @@ func (s *storage) read() ([]*moviess2p.Movie, error) {
 		applog.error(fname, err)
 		return nil, err
 	}
-	// var movies []*moviess2p.Movie
-	// var movies interface{}
-	var movies map[string][]map[string]interface{}
-	err = json.Unmarshal(file, &movies) // GRPC関連のデータ構造へのアンマーシャルにハマったので、ひとまずマップに詰める。
+	var resS2pMovies moviess2p.Movies
+	err = json.Unmarshal(file, &resS2pMovies)
 	if err != nil {
 		applog.error(fname, err)
 		return nil, err
 	}
-	// applog.debug(fname, "=======================================================================")
-	// applog.debugf(fname, "%+v", movies)
-	// applog.debug(fname, "=======================================================================")
-	var resS2pMovies []*moviess2p.Movie
-	for _, movie := range movies["movies"] {
-		var resS2pMovie moviess2p.Movie
-		resS2pMovie.Skey = movie["skey"].(string)
-		resS2pMovie.Filename = movie["filename"].(string)
-		resS2pMovie.Title = movie["title"].(string)
-		resS2pMovie.Playtime = movie["playtime"].(string)
-		resS2pMovie.Photodatetime = movie["photodatetime"].(string)
-		resS2pMovies = append(resS2pMovies, &resS2pMovie)
-	}
-	// applog.debug(fname, "=======================================================================")
-	// applog.debugf(fname, "%+v", resS2pMovies)
-	// applog.debug(fname, "=======================================================================")
 	applog.debug(fname, "END")
-	// return movies, nil
-	return resS2pMovies, nil
+	return &resS2pMovies, nil
 }
 
 func (s *storage) readOne(skey string) (*moviess2p.Movie, error) {
@@ -100,7 +81,7 @@ func (s *storage) readOne(skey string) (*moviess2p.Movie, error) {
 		applog.error(fname, err)
 		return nil, err
 	}
-	for _, movie := range movies {
+	for _, movie := range movies.Movies {
 		if movie.Skey == skey {
 			applog.debug(fname, "END")
 			return movie, nil

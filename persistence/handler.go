@@ -39,5 +39,5 @@ func (h MovieHandler) GetMovies(ctx context.Context, req *moviess2p.Movie) (*mov
 		return nil, err
 	}
 	applog.debug(fname, "END")
-	return &moviess2p.Movies{Movies: movies}, nil
+	return movies, nil
 }
