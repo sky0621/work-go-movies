@@ -28,6 +28,8 @@ func handleMovies(w http.ResponseWriter, r *http.Request) {
 		handleMoviesPUT(w, r)
 	case "DELETE":
 		handleMoviesDELETE(w, r)
+	case "OPTIONS":
+		handleMoviesOPTIONS(w, r)
 	default:
 		respondHTTPErr(w, r, http.StatusNotFound)
 	}
@@ -54,6 +56,9 @@ func handleMoviesGET(w http.ResponseWriter, r *http.Request) {
 		}
 		applog.debug(fname, "サーバとGetMovieで接続完了")
 		applog.debug(fname, resMovie)
+
+		w.Header().Add("Access-Control-Allow-Origin", "*")
+		w.Header().Add("Access-Control-Allow-Methods", "GET")
 		respond(w, r, http.StatusOK, resMovie)
 	} else {
 		applog.debugf(fname, "Path: %s", p.Path)
@@ -67,6 +72,9 @@ func handleMoviesGET(w http.ResponseWriter, r *http.Request) {
 		}
 		applog.debug(fname, "サーバとGetMoviesで接続完了")
 		applog.debug(fname, resMovies)
+
+		w.Header().Add("Access-Control-Allow-Origin", "*")
+		w.Header().Add("Access-Control-Allow-Methods", "GET")
 		respond(w, r, http.StatusOK, resMovies)
 	}
 	applog.debug(fname, "END")
@@ -82,4 +90,15 @@ func handleMoviesPUT(w http.ResponseWriter, r *http.Request) {
 
 func handleMoviesDELETE(w http.ResponseWriter, r *http.Request) {
 	respondErr(w, r, http.StatusInternalServerError, errors.New("未実装です"))
+}
+
+func handleMoviesOPTIONS(w http.ResponseWriter, r *http.Request) {
+	const fname = "handleMoviesOPTIONS"
+	applog.debug(fname, "START")
+
+	w.Header().Add("Access-Control-Allow-Origin", "*")
+	w.Header().Add("Access-Control-Allow-Methods", "GET")
+	respond(w, r, http.StatusOK, nil)
+
+	applog.debug(fname, "END")
 }
