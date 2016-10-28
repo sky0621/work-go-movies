@@ -14,8 +14,6 @@ import (
 
 const watchListFile = "watch.list"
 
-const moviesPersistenceJSON = "movies-persistence.json"
-
 // IsRunning ... 処理中かどうか
 var IsRunning bool
 
@@ -95,7 +93,7 @@ func toMoviesArray(watchList *os.File, err error) ([]*moviess2p.Movie, error) {
 func readMoviesPersistenceJSON(storageAddr string) (*moviess2p.Movies, error) {
 	const fname = "readMoviesPersistenceJSON"
 	log.Println(fname, "START")
-	file, err := ioutil.ReadFile(filepath.Join(storageAddr, moviesPersistenceJSON))
+	file, err := ioutil.ReadFile(storageAddr)
 	if err != nil {
 		log.Println(fname, err)
 		return nil, err
@@ -120,7 +118,7 @@ func merge(watchList []*moviess2p.Movie, moviesPersistence *moviess2p.Movies, st
 		log.Println(fname, err)
 		return err
 	}
-	ioutil.WriteFile(filepath.Join(storageAddr, moviesPersistenceJSON), jsonByteArray, os.ModePerm)
+	ioutil.WriteFile(storageAddr, jsonByteArray, os.ModePerm)
 	log.Println(fname, "END")
 	return nil
 }

@@ -32,7 +32,7 @@ func TestToMoviesArray(t *testing.T) {
 func TestReadMoviesPersistenceJSON(t *testing.T) {
 	const fname = "TestReadMoviesPersistenceJSON"
 	t.Log(fname, "START")
-	movies, err := readMoviesPersistenceJSON("testdata/TestReadMoviesPersistenceJSON")
+	movies, err := readMoviesPersistenceJSON("testdata/TestReadMoviesPersistenceJSON/movies-persistence.json")
 	if err != nil {
 		t.Fatal(fname, err)
 	}
@@ -48,11 +48,11 @@ func TestMerge(t *testing.T) {
 	if lerr != nil {
 		t.Fatal(fname, lerr)
 	}
-	movies, jerr := readMoviesPersistenceJSON("testdata/TestMerge")
+	movies, jerr := readMoviesPersistenceJSON("testdata/TestMerge/movies-persistence.json")
 	if jerr != nil {
 		t.Fatal(fname, jerr)
 	}
-	err := merge(moviesArray, movies, "testdata/TestMerge")
+	err := merge(moviesArray, movies, "testdata/TestMerge/movies-persistence.json")
 	if err != nil {
 		t.Fatal(fname, err)
 	}
