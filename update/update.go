@@ -45,6 +45,13 @@ func Run(watchListDir string, storageAddr string) {
 		return
 	}
 
+	// 処理が正常に終わったら今回分の watch.list は削除
+	err = os.Remove(filepath.Join(watchListDir, watchListFile))
+	if err != nil {
+		log.Println(fname, err)
+		return
+	}
+
 	log.Println(fname, "END")
 }
 
@@ -112,7 +119,6 @@ func merge(watchList []*moviess2p.Movie, moviesPersistence *moviess2p.Movies, st
 	const fname = "merge"
 	log.Println(fname, "START")
 	moviesPersistence.Movies = append(watchList, moviesPersistence.Movies...)
-	log.Println(moviesPersistence)
 	jsonByteArray, err := json.MarshalIndent(moviesPersistence, "", "  ")
 	if err != nil {
 		log.Println(fname, err)
