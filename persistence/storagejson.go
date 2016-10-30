@@ -16,7 +16,7 @@ type StorageJSON struct {
 }
 
 // OpenStorage ... ファイルという性質から（DBのように）コネクションオープンして保持する必要はない。
-// なので、ここでは以降の処理のため、ファイルが存在するか（なければ新規に作っておく）、ファイルが開けるかのチェックを行う。
+// なので、ここでは以降の処理のため、ファイルが存在するか（なければ新規に作っておく）のチェックを行う。
 func (s *StorageJSON) OpenStorage() error {
 	const fname = "OpenStorage"
 	s.Logger.debug(fname, "START")
@@ -24,10 +24,6 @@ func (s *StorageJSON) OpenStorage() error {
 	if err == nil {
 		s.Logger.debug(fname, "END")
 		return nil
-	}
-	if os.IsExist(err) {
-		s.Logger.error(fname, err)
-		return err
 	}
 	file, err := os.Create(s.JSONPath)
 	if err != nil {

@@ -10,12 +10,12 @@ func Exec(arg *Arg) int {
 	applog.debug(fname, "START")
 
 	applog.debug(fname, "ストレージとのコネクト開始")
-	storage := &storage{}
-	err := storage.open(arg.StorageAddr)
+	var storage IStorager = &StorageJSON{JSONPath: arg.StorageAddr} // [MEMO]使うストレージの切り替えは設定ファイルに逃がすなどしたい
+	err := storage.OpenStorage()
 	if err != nil {
 		return ExitCodeStorageError
 	}
-	defer storage.close()
+	defer storage.CloseStorage()
 	applog.debug(fname, storage)
 	applog.debug(fname, "ストレージとのコネクト終了")
 
