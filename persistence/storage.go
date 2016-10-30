@@ -1,92 +1,39 @@
 package persistence
 
 import (
-	"encoding/json"
-	"io/ioutil"
-	"os"
-
 	moviess2p "github.com/sky0621/work-go-movies/grpcs2p"
 )
 
-const (
-	storageName    = "movies-persistence"
-	collectionName = "movies"
-)
+// [MEMO]現状のJSONでのデータ保持だけでなくRDBやドキュメント指向DBなど切り替えやすくするよう、インタフェースを定義してみる。とはいえ、個人ツールではYAGNI感が強い。
 
-// Storage ... ストレージ操作を抽象化する構造体
-type storage struct {
-	// [MEMO]MongoDB考えたけどうまくデータ取得できず断念。とりあえずJSONのままファイルへ。
-	// conn *mgo.Session
-	storageAddr string
+// IStorager ... ストレージへの操作を定義（※ストレージへのコネクションの保持は実装する構造体が担う想定）
+type IStorager interface {
+	OpenStorage() error
+	CloseStorage() error
+	Create(param *CrudParam) (*CrudResult, error)
+	Read(cond *CrudCondition) (*CrudResults, error)
+	Update(cond *CrudCondition) (*CrudResults, error)
+	Delete(cond *CrudCondition) (*CrudResults, error)
 }
 
-// [MEMO]結局、接続情報をflagから（かつmain()で）取得する方式では抽象化できない。。。やっぱり環境変数からの取得にすべきか。
-func (s *storage) open(storageAddr string) error {
-	const fname = "open"
-	applog.debug(fname, "START")
-	s.storageAddr = storageAddr // [MEMO]構造体生成時に渡せるけど。。。
-	// var err error
-	// [MEMO]MongoDB考えたけどうまくデータ取得できず断念。とりあえずJSONのままファイルへ。
-	// s.conn, err = mgo.Dial(storageAddr)
-	_, err := os.Stat(storageAddr)
-	if err == nil {
-		applog.debug(fname, "END")
-		return nil
-	}
-	if os.IsExist(err) {
-		applog.error(fname, err)
-		return err
-	}
-	file, err := os.Create(storageAddr)
-	if err != nil {
-		applog.error(fname, err)
-		return err
-	}
-	defer file.Close()
-	applog.debug(fname, "END")
-	return nil
+// CrudCondition ...
+type CrudCondition struct {
+	// 検索・更新系の条件として利用
 }
 
-func (s *storage) close() error {
-	const fname = "close"
-	applog.debug(fname, "START")
-	// s.conn.Close() // TODO 何かエラー出る？
-	applog.debug(fname, "END")
-	return nil
+// CrudParam ...
+type CrudParam struct {
+	// 作成系のパラメータとして利用
 }
 
-func (s *storage) read() (*moviess2p.Movies, error) {
-	const fname = "read"
-	applog.debug(fname, "START")
-	file, err := ioutil.ReadFile(s.storageAddr)
-	if err != nil {
-		applog.error(fname, err)
-		return nil, err
-	}
-	var resS2pMovies moviess2p.Movies
-	err = json.Unmarshal(file, &resS2pMovies)
-	if err != nil {
-		applog.error(fname, err)
-		return nil, err
-	}
-	applog.debug(fname, "END")
-	return &resS2pMovies, nil
+// CrudResult ...
+type CrudResult struct {
+	// 作成系の結果として利用
+	BindObj moviess2p.Movie
 }
 
-func (s *storage) readOne(skey string) (*moviess2p.Movie, error) {
-	const fname = "readOne"
-	applog.debug(fname, "START")
-	movies, err := s.read()
-	if err != nil {
-		applog.error(fname, err)
-		return nil, err
-	}
-	for _, movie := range movies.Movies {
-		if movie.Skey == skey {
-			applog.debug(fname, "END")
-			return movie, nil
-		}
-	}
-	applog.debug(fname, "END(No Hit)")
-	return nil, nil
+// CrudResults ...
+type CrudResults struct {
+	// 検索・更新・削除系の結果として利用
+	BindObj moviess2p.Movies
 }
