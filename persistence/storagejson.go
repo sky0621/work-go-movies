@@ -25,6 +25,10 @@ func (s *StorageJSON) OpenStorage() error {
 		s.Logger.debug(fname, "END")
 		return nil
 	}
+	if os.IsExist(err) {
+		s.Logger.error(fname, err)
+		return err
+	}
 	file, err := os.Create(s.JSONPath)
 	if err != nil {
 		s.Logger.error(fname, err)
